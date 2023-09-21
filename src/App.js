@@ -5,8 +5,10 @@ import { useState, useEffect } from 'react';
 import Square from './Components/Square';
 import { WinningPatterns } from './WinningPatterns';
 
+const initialTable = ["", "", "", "", "", "", "", "", ""];
+
 function App() {
-  const [table, setTable] = useState(["", "", "", "", "", "", "", "", ""]);
+  const [table, setTable] = useState(initialTable);
   const [player, setPlayer] = useState("X");
   const [result, setResult] = useState({ winner: null, state: null });
 
@@ -26,8 +28,10 @@ function App() {
 
     if (state === "won") {
       alert(`Game won by ${winner} !!!`);
+      restart();
     } else if (state === "tie") {
       alert("IT IS A TIE !!!");
+      restart();
     }
   }, [result]);
 
@@ -70,6 +74,11 @@ function App() {
     if(tableFilled) {
       setResult({ winner: null, state: "tie" });
     }
+  }
+
+  const restart = () => {
+    setTable(initialTable);
+    setPlayer("X");
   }
 
   return (
