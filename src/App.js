@@ -1,26 +1,56 @@
 import './App.css';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Square from './Components/Square';
+import { WinningPatterns } from './WinningPatterns';
 
 function App() {
   const [table, setTable] = useState(["", "", "", "", "", "", "", "", ""]);
   const [player, setPlayer] = useState("X");
+  const [result, setResult] = useState({winner: null, state: null});
 
-  const onClickSquare = (square) => {
-    setTable(table.map((value, index) => {
-      if (index === square) return player
-
-      return value;
-    }))
+  useEffect(() => {
+    checkWin();
 
     if(player === "X") {
       setPlayer("O");
     } else {
       setPlayer("X");
     }
+  }, [table]);
+
+  useEffect(() => {
+    result.state && alert(`Game won by ${result.winner} !!!`);
+  }, [result]);
+
+  const onClickSquare = (square) => {
+    setTable(table.map((value, index) => {
+      if (index === square && value === "") return player
+
+      return value;
+    }))
   };
+
+  const checkWin = () => {
+    WinningPatterns.forEach((pattern) => {
+      const firstPlayer = table[pattern[0]];
+
+      if(firstPlayer === "") return;
+
+      let foundWinningPattern = true;
+
+      pattern.forEach((index) => {
+        if(table[index] !== firstPlayer) {
+          foundWinningPattern = false;
+        }
+      })
+
+      if(foundWinningPattern) {
+        setResult({winner: player, state: "won"});
+      }
+    })
+  }
 
   return (
     <div className="App">
