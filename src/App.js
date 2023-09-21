@@ -8,10 +8,11 @@ import { WinningPatterns } from './WinningPatterns';
 function App() {
   const [table, setTable] = useState(["", "", "", "", "", "", "", "", ""]);
   const [player, setPlayer] = useState("X");
-  const [result, setResult] = useState({winner: null, state: null});
+  const [result, setResult] = useState({ winner: null, state: null });
 
   useEffect(() => {
     checkWin();
+    checkIfTie();
 
     if(player === "X") {
       setPlayer("O");
@@ -21,7 +22,13 @@ function App() {
   }, [table]);
 
   useEffect(() => {
-    result.state && alert(`Game won by ${result.winner} !!!`);
+    const { winner, state } = result;
+
+    if (state === "won") {
+      alert(`Game won by ${winner} !!!`);
+    } else if (state === "tie") {
+      alert("IT IS A TIE !!!");
+    }
   }, [result]);
 
   const onClickSquare = (square) => {
@@ -47,9 +54,22 @@ function App() {
       })
 
       if(foundWinningPattern) {
-        setResult({winner: player, state: "won"});
+        setResult({ winner: player, state: "won" });
       }
     })
+  }
+
+  const checkIfTie = () => {
+    let tableFilled = true;
+    table.forEach((square) => {
+      if(square === "") {
+        tableFilled = false;
+      }
+    })
+
+    if(tableFilled) {
+      setResult({ winner: null, state: "tie" });
+    }
   }
 
   return (
